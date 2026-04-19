@@ -37,11 +37,39 @@ const cityColors = {
   gaziantep: G, sanliurfa: G, diyarbakir: G, mardin: G, adiyaman: G,
   siirt: G, batman: G, sirnak: G, kilis: G,
 };
-
+const cityNames = {
+  istanbul: "İstanbul", bursa: "Bursa", canakkale: "Çanakkale",
+  edirne: "Edirne", kirklareli: "Kırklareli", bilecik: "Bilecik",
+  tekirdag: "Tekirdağ", kocaeli: "Kocaeli", sakarya: "Sakarya",
+  yalova: "Yalova", balikesir: "Balıkesir", izmir: "İzmir",
+  manisa: "Manisa", aydin: "Aydın", denizli: "Denizli",
+  mugla: "Muğla", kutahya: "Kütahya", usak: "Uşak",
+  afyonkarahisar: "Afyonkarahisar", antalya: "Antalya",
+  mersin: "Mersin", adana: "Adana", hatay: "Hatay",
+  isparta: "Isparta", burdur: "Burdur", kahramanmaras: "Kahramanmaraş",
+  osmaniye: "Osmaniye", kayseri: "Kayseri", konya: "Konya",
+  ankara: "Ankara", sivas: "Sivas", kirikkale: "Kırıkkale",
+  aksaray: "Aksaray", karaman: "Karaman", kirsehir: "Kırşehir",
+  nevsehir: "Nevşehir", nigde: "Niğde", yozgat: "Yozgat",
+  cankiri: "Çankırı", eskisehir: "Eskişehir", bolu: "Bolu",
+  artvin: "Artvin", rize: "Rize", trabzon: "Trabzon",
+  samsun: "Samsun", ordu: "Ordu", zonguldak: "Zonguldak",
+  duzce: "Düzce", karabuk: "Karabük", bartin: "Bartın",
+  kastamonu: "Kastamonu", sinop: "Sinop", amasya: "Amasya",
+  tokat: "Tokat", corum: "Çorum", giresun: "Giresun",
+  gumushane: "Gümüşhane", bayburt: "Bayburt", erzurum: "Erzurum",
+  erzincan: "Erzincan", elazig: "Elazığ", malatya: "Malatya",
+  tunceli: "Tunceli", bingol: "Bingöl", bitlis: "Bitlis",
+  mus: "Muş", van: "Van", hakkari: "Hakkari", agri: "Ağrı",
+  kars: "Kars", igdir: "Iğdır", ardahan: "Ardahan",
+  gaziantep: "Gaziantep", sanliurfa: "Şanlıurfa",
+  diyarbakir: "Diyarbakır", mardin: "Mardin", adiyaman: "Adıyaman",
+  siirt: "Siirt", batman: "Batman", sirnak: "Şırnak", kilis: "Kilis",
+};
 const mapCss = Object.entries(cityColors)
   .map(([id, color]) =>
-    `#${id} path{fill:${color}!important}` +
-    `#${id}:hover path{filter:brightness(1.15)!important;cursor:pointer}`
+    `#${id} path{fill:${color}!important;transition:filter 0.15s}` +
+    `#${id}:hover path{filter:brightness(1.2)!important;cursor:pointer}`
   )
   .join("");
 
@@ -59,6 +87,8 @@ export default function App() {
   const [selected, setSelected] = useState(null);
   const [userPlants, setUserPlants] = useState({});
   const [totalAdded, setTotalAdded] = useState(0);
+  const [hoveredCity, setHoveredCity] = useState(null);
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     fetch("/api/plants")
@@ -92,6 +122,27 @@ export default function App() {
       _cityKey: name.toUpperCase(),
     });
   };
+
+const handleMouseMove = (e) => {
+  setTooltipPos({ x: e.clientX, y: e.clientY });
+
+  // Mouse'un altındaki SVG elementinden il id'sini oku
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  if (!el) return;
+
+  // SVG path'inin parent'ı veya grandparent'ı il id'sini taşır
+  const cityEl =
+    el.closest("[id]") ||
+    el.parentElement?.closest("[id]");
+
+  const id = cityEl?.id;
+  if (id && cityColors[id]) {
+    const data = getCityData(id);
+    setHoveredCity(cityNames[id] || data?.il || id);
+  } else {
+    setHoveredCity(null);
+  }
+};
 
   const handlePlantAdded = (plant) => {
     if (!selected) return;
@@ -150,13 +201,40 @@ export default function App() {
                 <span>Bir ile tıklayarak o ilin endemik bitkilerini görüntüleyin</span>
               </div>
             )}
-            <div className="map-wrapper">
+            <div
+              className="map-wrapper"
+              onMouseMove={handleMouseMove}
+              onMouseLeave={() => setHoveredCity(null)}
+            >
               <TurkeyMap
                 hoverable={false}
                 onClick={handleClick}
                 customStyle={{ idleColor: "#888", hoverColor: "#888" }}
               />
             </div>
+
+            {hoveredCity && (
+              <div
+                style={{
+                  position: "fixed",
+                  left: tooltipPos.x + 12,
+                  top: tooltipPos.y - 36,
+                  background: "rgba(20,20,20,0.85)",
+                  color: "#fff",
+                  padding: "5px 12px",
+                  borderRadius: "8px",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  pointerEvents: "none",
+                  zIndex: 9999,
+                  backdropFilter: "blur(4px)",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                📍 {hoveredCity}
+              </div>
+            )}
           </div>
 
           <div className="legend">
