@@ -726,11 +726,34 @@ body {
   opacity: 0.5;
 }
 
-/* ─── Responsive ──────────────────────────── */
+/* ─── Auth info box ───────────────────────── */
+.auth-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f1f8e9;
+  border: 1px solid #c8e6c9;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.auth-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.auth-info p {
+  font-size: 0.84rem;
+  color: #37474f;
+  line-height: 1.4;
+}
+
+/* ─── Responsive — Tablet ─────────────────── */
 @media (max-width: 960px) {
   .main {
     flex-direction: column;
     padding: 16px;
+    gap: 16px;
   }
 
   .panel-section {
@@ -744,28 +767,138 @@ body {
   }
 
   .header-text h1 {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
   }
 
   .header-stats {
     display: none;
   }
+
+  .map-card {
+    padding: 14px;
+  }
 }
 
+/* ─── Responsive — Mobile ─────────────────── */
 @media (max-width: 600px) {
   .header {
-    padding: 0 16px;
+    padding: 0 14px;
+    position: relative;
   }
 
   .header-content {
-    height: 60px;
+    height: 56px;
   }
 
   .header-icon {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+  }
+
+  .header-text h1 {
+    font-size: 1.05rem;
+    letter-spacing: -0.2px;
+  }
+
+  .header-text p {
+    display: none;
   }
 
   .main {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .map-card {
+    border-radius: 14px;
+    padding: 10px;
+  }
+
+  .map-hint {
+    font-size: 0.78rem;
+    padding: 6px 10px;
+  }
+
+  .legend {
+    border-radius: 10px;
+    padding: 10px 12px;
+    gap: 6px 12px;
+  }
+
+  .legend-item {
+    font-size: 0.72rem;
+  }
+
+  .panel-section {
+    margin-top: 0;
+  }
+
+  .city-panel {
+    border-radius: 14px;
+  }
+
+  .panel-header {
+    padding: 16px 14px 14px;
+  }
+
+  .panel-city {
+    font-size: 1.35rem;
+  }
+
+  .panel-body {
     padding: 12px;
+  }
+
+  .plant-card {
+    padding: 11px 12px;
+  }
+
+  .plant-icon-wrap {
+    width: 34px;
+    height: 34px;
+  }
+
+  .plant-name {
+    font-size: 0.88rem;
+  }
+
+  .panel-footer {
+    padding: 10px 12px;
+  }
+
+  .add-plant-btn {
+    font-size: 0.85rem;
+    padding: 10px;
+  }
+
+  .empty-panel {
+    padding: 32px 20px;
+    border-radius: 14px;
+  }
+
+  .modal {
+    border-radius: 16px;
+    margin: 10px;
+  }
+
+  .modal-form {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .modal-header {
+    padding: 16px 16px 14px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .btn-secondary,
+  .btn-primary {
+    flex: none;
+    width: 100%;
+    padding: 12px;
+    font-size: 0.92rem;
   }
 }
