@@ -3,6 +3,7 @@ import TurkeyMapLib from "turkey-map-react";
 const TurkeyMap = TurkeyMapLib.default ?? TurkeyMapLib;
 import plantData from "./data/plants.js";
 import CityPanel from "./CityPanel.jsx";
+import { apiUrl } from "./api.js";
 import "./App.css";
 
 const bolgeRenk = {
@@ -37,6 +38,35 @@ const cityColors = {
   gaziantep: G, sanliurfa: G, diyarbakir: G, mardin: G, adiyaman: G,
   siirt: G, batman: G, sirnak: G, kilis: G,
 };
+const cityNames = {
+  istanbul: "İstanbul", bursa: "Bursa", canakkale: "Çanakkale",
+  edirne: "Edirne", kirklareli: "Kırklareli", bilecik: "Bilecik",
+  tekirdag: "Tekirdağ", kocaeli: "Kocaeli", sakarya: "Sakarya",
+  yalova: "Yalova", balikesir: "Balıkesir", izmir: "İzmir",
+  manisa: "Manisa", aydin: "Aydın", denizli: "Denizli",
+  mugla: "Muğla", kutahya: "Kütahya", usak: "Uşak",
+  afyonkarahisar: "Afyonkarahisar", antalya: "Antalya",
+  mersin: "Mersin", adana: "Adana", hatay: "Hatay",
+  isparta: "Isparta", burdur: "Burdur", kahramanmaras: "Kahramanmaraş",
+  osmaniye: "Osmaniye", kayseri: "Kayseri", konya: "Konya",
+  ankara: "Ankara", sivas: "Sivas", kirikkale: "Kırıkkale",
+  aksaray: "Aksaray", karaman: "Karaman", kirsehir: "Kırşehir",
+  nevsehir: "Nevşehir", nigde: "Niğde", yozgat: "Yozgat",
+  cankiri: "Çankırı", eskisehir: "Eskişehir", bolu: "Bolu",
+  artvin: "Artvin", rize: "Rize", trabzon: "Trabzon",
+  samsun: "Samsun", ordu: "Ordu", zonguldak: "Zonguldak",
+  duzce: "Düzce", karabuk: "Karabük", bartin: "Bartın",
+  kastamonu: "Kastamonu", sinop: "Sinop", amasya: "Amasya",
+  tokat: "Tokat", corum: "Çorum", giresun: "Giresun",
+  gumushane: "Gümüşhane", bayburt: "Bayburt", erzurum: "Erzurum",
+  erzincan: "Erzincan", elazig: "Elazığ", malatya: "Malatya",
+  tunceli: "Tunceli", bingol: "Bingöl", bitlis: "Bitlis",
+  mus: "Muş", van: "Van", hakkari: "Hakkari", agri: "Ağrı",
+  kars: "Kars", igdir: "Iğdır", ardahan: "Ardahan",
+  gaziantep: "Gaziantep", sanliurfa: "Şanlıurfa",
+  diyarbakir: "Diyarbakır", mardin: "Mardin", adiyaman: "Adıyaman",
+  siirt: "Siirt", batman: "Batman", sirnak: "Şırnak", kilis: "Kilis",
+};
 
 const mapCss = Object.entries(cityColors)
   .map(([id, color]) =>
@@ -61,7 +91,7 @@ export default function App() {
   const [totalAdded, setTotalAdded] = useState(0);
 
   useEffect(() => {
-    fetch("/api/plants")
+    fetch(apiUrl.plants())
       .then((r) => r.json())
       .then((data) => {
         setUserPlants(data);
@@ -128,7 +158,26 @@ export default function App() {
         ),
     }));
   };
+const handleMouseMove = (e) => {
+  setTooltipPos({ x: e.clientX, y: e.clientY });
 
+  // Mouse'un altındaki SVG elementinden il id'sini oku
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  if (!el) return;
+
+  // SVG path'inin parent'ı veya grandparent'ı il id'sini taşır
+  const cityEl =
+    el.closest("[id]") ||
+    el.parentElement?.closest("[id]");
+
+  const id = cityEl?.id;
+  if (id && cityColors[id]) {
+    const data = getCityData(id);
+setHoveredCity(cityNames[id] || data?.il || id);
+  } else {
+    setHoveredCity(null);
+  }
+};
   const panelColor = selected?._color ?? "#2d5016";
   const totalPlants = totalStaticPlants + totalAdded;
 
@@ -141,7 +190,7 @@ export default function App() {
           <div className="header-brand">
             <div className="header-icon">🌿</div>
             <div className="header-text">
-              <h1>Türkiye Endemik Bitki Atlası</h1>
+                <h1>Anadolu Botanik Portalı</h1>
               <p>7 Bölgede Yetişen Endemik Bitkiler</p>
             </div>
           </div>

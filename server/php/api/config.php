@@ -1,7 +1,7 @@
 <?php
 // ─── Admin Password ────────────────────────────────────────────────────────
 // Change this to your desired admin password.
-define('ADMIN_PASSWORD', 'changeme');
+define('ADMIN_PASSWORD', 'ozlemhocamsizicokseviyoruziyikivarsiniz');
 
 // ─── Database file path ────────────────────────────────────────────────────
 // Path to the JSON file used to store user-added plants.

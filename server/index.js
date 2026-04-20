@@ -73,7 +73,7 @@ app.post("/api/plants/:city", requireAuth, (req, res) => {
   res.status(201).json(plant);
 });
 
-app.delete("/api/plants/:city/:index", requireAuth, (req, res) => {
+app.post("/api/plants/:city/:index/delete", requireAuth, (req, res) => {
   const db = readDB();
   const city = req.params.city.toUpperCase();
   const idx = parseInt(req.params.index, 10);
@@ -89,7 +89,7 @@ app.delete("/api/plants/:city/:index", requireAuth, (req, res) => {
 
 if (IS_PROD) {
   app.use(express.static(DIST_PATH));
-  app.get("*", (req, res) => {
+  app.use((req, res) => {
     res.sendFile(path.join(DIST_PATH, "index.html"));
   });
 }

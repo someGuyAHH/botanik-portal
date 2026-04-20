@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { apiUrl } from "./api.js";
 
 export default function AddPlantModal({ city, cityName, onClose, onAdded }) {
   const [step, setStep] = useState("auth");
@@ -19,7 +20,7 @@ export default function AddPlantModal({ city, cityName, onClose, onAdded }) {
     setAuthError("");
     setAuthLoading(true);
     try {
-      const res = await fetch("/api/auth", {
+      const res = await fetch(apiUrl.auth(), {
         method: "POST",
         headers: { "x-admin-password": password },
       });
@@ -28,7 +29,8 @@ export default function AddPlantModal({ city, cityName, onClose, onAdded }) {
         return;
       }
       if (!res.ok) {
-        setAuthError(`Sunucu hatası (${res.status}). Lütfen tekrar deneyin.`);
+        const body = await res.json().catch(() => ({}));
+        setAuthError(body.error || `Sunucu hatası (${res.status}). Lütfen tekrar deneyin.`);
         return;
       }
       setStep("form");
@@ -52,7 +54,7 @@ export default function AddPlantModal({ city, cityName, onClose, onAdded }) {
     setSubmitError("");
     setSubmitLoading(true);
     try {
-      const res = await fetch(`/api/plants/${encodeURIComponent(city)}`, {
+      const res = await fetch(apiUrl.cityPlants(city), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AddPlantModal from "./AddPlantModal.jsx";
+import { apiUrl } from "./api.js";
 
 function DeleteConfirm({ plant, city, userIdx, onCancel, onDeleted }) {
   const [password, setPassword] = useState("");
@@ -15,8 +16,8 @@ function DeleteConfirm({ plant, city, userIdx, onCancel, onDeleted }) {
     setError("");
     setLoading(true);
     try {
-      const res = await fetch(`/api/plants/${encodeURIComponent(city)}/${userIdx}`, {
-        method: "DELETE",
+      const res = await fetch(apiUrl.deletePlant(city, userIdx), {
+        method: "POST",
         headers: { "x-admin-password": password },
       });
       if (res.status === 401) {
