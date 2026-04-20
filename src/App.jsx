@@ -224,7 +224,7 @@ export default function App() {
         <div className="footer-content">
           <span>🌿 Türkiye Endemik Bitki Atlası</span>
           <span className="footer-sep">·</span>
-          <span>Hazırlayan: Bora Toker | Hazırlık A | 115</span>
+          <span>All Rights Reserved. Developed with ❤️ by Furkan Hasanusta & Bora Toker</span>
         </div>
       </footer>
     </div>
