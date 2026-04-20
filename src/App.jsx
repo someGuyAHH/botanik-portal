@@ -78,13 +78,28 @@ const mapCss = Object.entries(cityColors)
 const totalStaticPlants = Object.values(plantData)
   .reduce((sum, d) => sum + d.bitkiler.length, 0);
 
+// Türkçe → ASCII dönüşüm tablosu
+function turkceNormalize(str) {
+  return str
+    .toUpperCase()
+    .replace(/İ/g, "I")
+    .replace(/Ğ/g, "G")
+    .replace(/Ü/g, "U")
+    .replace(/Ş/g, "S")
+    .replace(/Ö/g, "O")
+    .replace(/Ç/g, "C")
+    .replace(/Â/g, "A")   // ← şapkalı A
+    .replace(/Î/g, "I")   // ← şapkalı İ
+    .replace(/Û/g, "U");  // ← şapkalı U
+}
+
 function getCityData(name) {
+  const normalizedName = turkceNormalize(name);
   const found = Object.entries(plantData).find(
-    ([k]) => k.toUpperCase() === name.toUpperCase()
+    ([k]) => turkceNormalize(k) === normalizedName
   );
   return found ? found[1] : null;
 }
-
 export default function App() {
   const [selected, setSelected] = useState(null);
   const [userPlants, setUserPlants] = useState({});
@@ -116,7 +131,10 @@ export default function App() {
   );
 
   const handleClick = ({ name, id }) => {
-    const data = getCityData(name);
+      console.log("Haritadan gelen name:", name);
+  console.log("Haritadan gelen id:", id);
+  console.log("plants.js'de bulunan data:", getCityData(name));
+    const data = getCityData(name, id);
     const regionColor = cityColors[id] ?? bolgeRenk[data?.bolge] ?? "#2d5016";
     const base = data || { il: name, bolge: "—", bitkiler: [] };
     setSelected({
