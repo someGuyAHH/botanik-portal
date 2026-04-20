@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_PATH = path.join(__dirname, "db.json");
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const ADMIN_PASSWORD = "ozlemhocamsizicokseviyoruziyikivarsiniz";
 if (!ADMIN_PASSWORD) {
   console.warn("WARNING: ADMIN_PASSWORD is not set. Plant additions will be rejected.");
 }
