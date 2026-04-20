@@ -27,12 +27,13 @@ export default function AddPlantModal({ city, cityName, onClose, onAdded }) {
         setAuthError("Yanlış şifre. Lütfen tekrar deneyin.");
         return;
       }
-      if (!res.ok) throw new Error("Sunucu hatası");
-      setStep("form");
-    } catch (err) {
-      if (err.message !== "Yanlış şifre. Lütfen tekrar deneyin.") {
-        setAuthError("Sunucuya bağlanılamadı.");
+      if (!res.ok) {
+        setAuthError(`Sunucu hatası (${res.status}). Lütfen tekrar deneyin.`);
+        return;
       }
+      setStep("form");
+    } catch {
+      setAuthError("Sunucuya bağlanılamadı. API çalışıyor mu kontrol edin.");
     } finally {
       setAuthLoading(false);
     }
@@ -60,8 +61,8 @@ export default function AddPlantModal({ city, cityName, onClose, onAdded }) {
         body: JSON.stringify(form),
       });
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Bir hata oluştu");
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `Hata ${res.status}`);
       }
       const plant = await res.json();
       onAdded(plant);

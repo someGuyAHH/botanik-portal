@@ -4,10 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"vite\" \"node server/index.js\"",
+    "dev": "concurrently \"vite\" \"PORT=3001 node server/index.js\"",
     "dev:frontend": "vite",
-    "dev:backend": "node server/index.js",
+    "dev:backend": "PORT=3001 node server/index.js",
     "build": "vite build",
+    "build:plesk": "vite build && node scripts/copy-php.js",
+    "start": "node server/index.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },

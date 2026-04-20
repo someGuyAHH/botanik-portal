@@ -1,0 +1,10 @@
+Options -Indexes
+RewriteEngine On
+
+# Route /api/* requests to api/index.php, passing the sub-path as ?_route=
+RewriteRule ^api/(.*)$ api/index.php?_route=$1 [L,QSA]
+
+# For everything else: serve real files/dirs directly, otherwise SPA fallback
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]

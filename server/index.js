@@ -6,11 +6,15 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_PATH = path.join(__dirname, "db.json");
+const DIST_PATH = path.join(__dirname, "..", "dist");
 
-const ADMIN_PASSWORD = "ozlemhocamsizicokseviyoruziyikivarsiniz";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 if (!ADMIN_PASSWORD) {
   console.warn("WARNING: ADMIN_PASSWORD is not set. Plant additions will be rejected.");
 }
+
+const PORT = parseInt(process.env.PORT || "5000", 10);
+const IS_PROD = fs.existsSync(DIST_PATH);
 
 function readDB() {
   if (!fs.existsSync(DB_PATH)) {
@@ -83,6 +87,14 @@ app.delete("/api/plants/:city/:index", requireAuth, (req, res) => {
   res.json(removed[0]);
 });
 
-app.listen(3001, "127.0.0.1", () => {
-  console.log("Backend API: http://127.0.0.1:3001");
+if (IS_PROD) {
+  app.use(express.static(DIST_PATH));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(DIST_PATH, "index.html"));
+  });
+}
+
+const host = IS_PROD ? "0.0.0.0" : "127.0.0.1";
+app.listen(PORT, host, () => {
+  console.log(`Server running at http://${host}:${PORT} [${IS_PROD ? "production" : "development"}]`);
 });
